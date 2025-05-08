@@ -58,24 +58,6 @@ input, button, select {
     box-sizing: border-box;
 }
 
-/* Seat bunch grid */
-.seat-bunch-grid {
-    display: flex;
-    flex-wrap: wrap; /* Allow bunches to wrap to the next row */
-    gap: 20px; /* Space between bunches */
-}
-
-/* Seat bunch */
-.seat-bunch {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust columns per bunch */
-    gap: 10px; /* Space between seats in a bunch */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
 /* Table Labels */
 .table-label {
     text-align: center;
@@ -109,8 +91,15 @@ input, button, select {
 }
 
 .seat.occupied {
-    background-color: #ffcccb;
+    background-color: #f0f0f0;
     color: #000;
+}
+
+/* Transparent seats (deleted seats) */
+.seat[style*="background-color: transparent"] {
+    background-color: transparent !important;
+    border: none !important;
+    pointer-events: none !important;
 }
 
 /* Footer */
