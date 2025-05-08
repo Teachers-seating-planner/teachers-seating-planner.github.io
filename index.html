@@ -13,8 +13,6 @@
   
     <main>
         <div class="controls">
-           
-            <p></p>
             <details>
                 <summary>Upload Students Names</summary>
                 <input type="text" id="student-name" placeholder="Enter student name">
@@ -23,8 +21,6 @@
                     <option value="F">Female</option>
                 </select>
                 <button onclick="addStudent()">Add Student</button>
-                <p></p>
-                
                 <p></p>
                 <input type="file" id="student-file" accept=".csv">
                 <button onclick="uploadStudentFile()">Upload Student List</button>
@@ -43,6 +39,14 @@
                 <input type="number" id="grid-width" min="1" max="15" value="5"> 
                 <label for="grid-height">Grid Height:</label>
                 <input type="number" id="grid-height" min="1" max="15" value="4"> 
+                <p></p>
+                <label for="horizontal-gap">Horizontal Gap:</label>
+                <input type="range" id="horizontal-gap" min="0" max="50" value="10" oninput="updateGapLabels()"> 
+                <br>
+                <p></p>
+                <label for="vertical-gap">Vertical Gap:</label>
+                <input type="range" id="vertical-gap" min="0" max="50" value="10" oninput="updateGapLabels()"> 
+                <p></p>
                 <button onclick="resetPlan()">Reset Plan</button>
             </details>
             <p></p>
@@ -71,7 +75,6 @@
         <div class="table-label">Back</div>
     </main>
 
-
     <!-- Button to navigate to instructions -->
     <button onclick="window.location.href='instructions.html'" style="margin: 20px auto; display: block;">Go to Instructions</button>
     
@@ -82,4 +85,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
