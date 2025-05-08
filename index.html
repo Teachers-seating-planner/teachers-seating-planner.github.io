@@ -1,1 +1,85 @@
-<h1>hi</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Seating Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Classroom Seating Planner</h1>
+    </header>
+  
+    <main>
+        <div class="controls">
+           
+            <p></p>
+            <details>
+                <summary>Upload Students Names</summary>
+                <input type="text" id="student-name" placeholder="Enter student name">
+                <select id="student-gender">
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <button onclick="addStudent()">Add Student</button>
+                <p></p>
+                
+                <p></p>
+                <input type="file" id="student-file" accept=".csv">
+                <button onclick="uploadStudentFile()">Upload Student List</button>
+            </details>
+            <p></p>
+            <details>
+                <summary>Manage Students</summary>
+                <button onclick="randomizeSeats()">Randomize Seats</button>
+                <button onclick="autoArrangeByGender()">Auto-Arrange by Gender</button>
+                <button onclick="arrangeAlphabetically()">Arrange Alphabetically</button>
+            </details>
+            <p></p>
+            <details>
+                <summary>Grid Settings</summary>
+                <label for="grid-width">Grid Width:</label>
+                <input type="number" id="grid-width" min="1" max="15" value="5"> 
+                <label for="grid-height">Grid Height:</label>
+                <input type="number" id="grid-height" min="1" max="15" value="4"> 
+                <button onclick="resetPlan()">Reset Plan</button>
+            </details>
+            <p></p>
+            <details>
+                <summary>Save and Load</summary>
+                <div id="save-slot-container">
+                    <label for="save-slot">Select Save Slot:</label>
+                    <select id="save-slot">
+                        <option value="class1">Class 1</option>
+                        <option value="class2">Class 2</option>
+                        <option value="class3">Class 3</option>
+                        <option value="class4">Class 4</option>
+                    </select>
+                    <button onclick="savePlan()">Save Plan</button>
+                    <button onclick="loadPlan()">Load Plan</button>
+                </div>
+            </details>
+        </div>
+
+        <!-- Front Label -->
+        <div class="table-label">Front</div>
+
+        <div class="seat-grid"></div>
+
+        <!-- Back Label -->
+        <div class="table-label">Back</div>
+    </main>
+
+
+    <!-- Button to navigate to instructions -->
+    <button onclick="window.location.href='instructions.html'" style="margin: 20px auto; display: block;">Go to Instructions</button>
+    
+    <footer>
+        <p>Version 1.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
