@@ -69,16 +69,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function uploadStudentFile() {
+    console.log("Upload Student File button clicked"); // Debugging log
+
     const fileInput = document.getElementById("student-file");
     const file = fileInput.files[0];
 
     if (!file) {
         alert("Please select an Excel file to upload.");
+        console.log("No file selected"); // Debugging log
         return;
     }
 
+    console.log(`File selected: ${file.name}`); // Debugging log
+
     const reader = new FileReader();
     reader.onload = function (event) {
+        console.log("File loaded successfully"); // Debugging log
+
         const data = new Uint8Array(event.target.result);
         const workbook = XLSX.read(data, { type: "array" });
 
@@ -88,6 +95,7 @@ function uploadStudentFile() {
 
         // Convert the sheet to JSON
         const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        console.log("Excel data parsed:", rows); // Debugging log
 
         rows.forEach(row => {
             const [_, lastName, firstName, gender] = row; // Skip column A and extract B, C, D
@@ -107,6 +115,11 @@ function uploadStudentFile() {
             randomSeat.textContent = `${formattedName} (${gender.trim()})`;
             randomSeat.classList.add("occupied");
         });
+    };
+
+    reader.onerror = function () {
+        console.error("Error reading the file"); // Debugging log
+        alert("Failed to read the file. Please try again.");
     };
 
     reader.readAsArrayBuffer(file);
