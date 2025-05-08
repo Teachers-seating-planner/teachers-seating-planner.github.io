@@ -32,13 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
             seat.addEventListener("dragover", dragOver);
             seat.addEventListener("drop", drop);
 
-            // Add click event listener for rotating the seat
+            // Add click event listener for rotating or deleting the seat
             let rotation = 0; // Track the current rotation angle
             seat.addEventListener("click", (event) => {
-                if (event.shiftKey && seat.classList.contains("occupied")) {
-                    // Delete the name if Shift key is held
-                    seat.textContent = "";
-                    seat.classList.remove("occupied");
+                if (event.shiftKey) {
+                    deleteSeat(seat); // Delete the seat when Shift key is held
                 } else {
                     // Rotate the seat
                     rotation = (rotation + 90) % 360; // Increment rotation by 90 degrees
@@ -75,17 +73,24 @@ function uploadStudentFile() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a CSV file to upload.");
+        alert("Please select an Excel file to upload.");
         return;
     }
 
     const reader = new FileReader();
     reader.onload = function (event) {
-        const csvContent = event.target.result;
-        const rows = csvContent.split("\n").map(row => row.trim()).filter(row => row);
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        // Assuming the first sheet contains the student data
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        // Convert the sheet to JSON
+        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         rows.forEach(row => {
-            const [fullName, gender] = row.split(",");
+            const [fullName, gender] = row;
             if (!fullName || !gender) return;
 
             // Extract first name and first letter of last name
@@ -107,10 +112,97 @@ function uploadStudentFile() {
         });
     };
 
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
 }
 
+// History stack to store previous states
+let historyStack = [];
+
+// Function to save the current state to the history stack
+function saveStateToHistory() {
+    const seats = [...document.querySelectorAll(".seat")];
+    const currentState = seats.map(seat => ({
+        text: seat.textContent,
+        occupied: seat.classList.contains("occupied"),
+        rotation: seat.style.transform || "rotate(0deg)"
+    }));
+    historyStack.push(currentState);
+}
+
+// Undo function to revert to the previous state
+function undo() {
+    if (historyStack.length === 0) {
+        alert("No actions to undo!");
+        return;
+    }
+
+    const previousState = historyStack.pop();
+    const seats = [...document.querySelectorAll(".seat")];
+
+    if (previousState.length !== seats.length) {
+        alert("Undo failed: grid dimensions have changed!");
+        return;
+    }
+
+    seats.forEach((seat, index) => {
+        const prevSeat = previousState[index];
+        seat.textContent = prevSeat.text;
+        seat.style.transform = prevSeat.rotation;
+        if (prevSeat.occupied) {
+            seat.classList.add("occupied");
+        } else {
+            seat.classList.remove("occupied");
+        }
+    });
+}
+
+// History stack to store deleted seats
+let deletedSeatsHistory = [];
+
+// Function to delete a seat and save its state
+function deleteSeat(seat) {
+    // Save the current state of the seat to the history stack
+    const seatState = {
+        index: [...document.querySelectorAll(".seat")].indexOf(seat), // Seat's position in the grid
+        text: seat.textContent,
+        occupied: seat.classList.contains("occupied"),
+        rotation: seat.style.transform || "rotate(0deg)"
+    };
+    deletedSeatsHistory.push(seatState);
+
+    // Clear the seat
+    seat.textContent = "";
+    seat.classList.remove("occupied");
+    seat.style.backgroundColor = "transparent";
+    seat.style.border = "none";
+    seat.style.pointerEvents = "none"; // Disable interactions
+}
+
+// Undo function to restore the last deleted seat
+function undo() {
+    if (deletedSeatsHistory.length === 0) {
+        alert("No actions to undo!");
+        return;
+    }
+
+    // Get the last deleted seat's state
+    const lastDeletedSeat = deletedSeatsHistory.pop();
+    const seats = document.querySelectorAll(".seat");
+
+    // Restore the seat's state
+    const seatToRestore = seats[lastDeletedSeat.index];
+    seatToRestore.textContent = lastDeletedSeat.text;
+    seatToRestore.classList.add("occupied");
+    seatToRestore.style.transform = lastDeletedSeat.rotation;
+    seatToRestore.style.backgroundColor = ""; // Reset background color
+    seatToRestore.style.border = ""; // Reset border
+    seatToRestore.style.pointerEvents = ""; // Enable interactions
+}
+
+// Modify existing functions to save state before making changes
 function addStudent() {
+    saveStateToHistory(); // Save the current state
+
     let nameInput = document.getElementById("student-name").value.trim();
     let genderInput = document.getElementById("student-gender").value;
 
@@ -139,6 +231,8 @@ function addStudent() {
 }
 
 function randomizeSeats() {
+    saveStateToHistory(); // Save the current state
+
     let seats = [...document.querySelectorAll(".seat")];
     let studentNames = seats.filter(seat => seat.classList.contains("occupied")).map(seat => seat.textContent);
     
@@ -156,10 +250,13 @@ function randomizeSeats() {
 }
 
 function resetPlan() {
+    saveStateToHistory(); // Save the current state
+
     let seats = document.querySelectorAll(".seat");
     seats.forEach(seat => {
         seat.classList.remove("occupied");
         seat.textContent = "";
+        seat.style.transform = "rotate(0deg)";
     });
 }
 
@@ -387,6 +484,78 @@ function importSaveSlots(event) {
         alert("Save slots imported successfully! Refresh the page to see the changes.");
     };
     reader.readAsText(file);
+}
+
+function applyPreset(presetName) {
+    console.log(`Selected preset: ${presetName}`); // Debugging log
+
+    if (presetName === "preset1") {
+        gridWidthInput.value = 3;
+        gridHeightInput.value = 3;
+        createSeats();
+    } else if (presetName === "preset2") {
+        gridWidthInput.value = 5;
+        gridHeightInput.value = 4;
+        createSeats();
+    } else if (presetName === "preset3") {
+        gridWidthInput.value = 6;
+        gridHeightInput.value = 6;
+        createSeats();
+    } else if (presetName === "uShape") {
+        console.log("Applying U-Shape preset"); // Debugging log
+        createUShape();
+    }
+}
+
+function createUShape() {
+    console.log("Creating U-Shape grid"); // Debugging log
+
+    const gridWidth = 7; // Fixed width for U-shape
+    const gridHeight = 5; // Fixed height for U-shape
+    seatGrid.innerHTML = ""; // Clear existing seats
+
+    seatGrid.style.gridTemplateColumns = `repeat(${gridWidth}, 1fr)`;
+    seatGrid.style.columnGap = `${horizontalGapInput.value}px`;
+    seatGrid.style.rowGap = `${verticalGapInput.value}px`;
+
+    for (let row = 0; row < gridHeight; row++) {
+        for (let col = 0; col < gridWidth; col++) {
+            const seat = document.createElement("div");
+
+            // Add seats only for the U-shape
+            if (
+                (row === 0) || // Top row
+                (row === gridHeight - 1) || // Bottom row
+                (col === 0 && row !== gridHeight - 1) || // Left column (excluding bottom-left corner)
+                (col === gridWidth - 1 && row !== gridHeight - 1) // Right column (excluding bottom-right corner)
+            ) {
+                seat.classList.add("seat");
+                seat.draggable = true;
+
+                // Add event listeners for drag-and-drop
+                seat.addEventListener("dragstart", dragStart);
+                seat.addEventListener("dragover", dragOver);
+                seat.addEventListener("drop", drop);
+
+                // Add click event listener for rotating or deleting the seat
+                let rotation = 0;
+                seat.addEventListener("click", (event) => {
+                    if (event.shiftKey) {
+                        deleteSeat(seat); // Delete the seat when Shift key is held
+                    } else {
+                        rotation = (rotation + 90) % 360;
+                        seat.style.transform = `rotate(${rotation}deg)`;
+                    }
+                });
+            } else {
+                // Empty space for the U-shape
+                seat.style.backgroundColor = "transparent";
+                seat.style.pointerEvents = "none";
+            }
+
+            seatGrid.appendChild(seat);
+        }
+    }
 }
 
 
