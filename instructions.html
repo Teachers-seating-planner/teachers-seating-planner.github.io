@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructions - Classroom Seating Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>How to Use the Classroom Seating Planner</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Add Student:</strong> Enter a name and select a gender, then click "Add Student" to assign a student to a random seat.</li>
+                <li><strong>Randomize Seats:</strong> Shuffle the seating arrangement randomly.</li>
+                <li><strong>Auto-Arrange by Gender:</strong> Automatically arrange students alternately by gender.</li>
+                <li><strong>Arrange Alphabetically:</strong> Arrange students' names in alphabetical order.</li>
+                <li><strong>Upload Student List:</strong> Upload a CSV file with student names and genders to populate the grid.</li>
+                <li><strong>Reset Plan:</strong> Clear all seats and reset the grid.</li>
+                <li><strong>Save Plan:</strong> Save the current seating arrangement to your browser's local storage.</li>
+                <li><strong>Load Plan:</strong> Load a previously saved seating arrangement.</li>
+                <li><strong>Multiple Save Slots:</strong> Use the dropdown menu to select a save slot (e.g., "Class 1", "Class 2") and save or load seating plans for different classes.</li>
+                <li><strong>Rotate Seats:</strong> Click on a seat to rotate it by 90 degrees. Hold <strong>Shift</strong> and click to delete the name from the seat.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>How to Set Up the CSV File</h2>
+            <p>The CSV file should contain two columns:</p>
+            <ul>
+                <li><strong>Name:</strong> The student's full name.</li>
+                <li><strong>Gender:</strong> Use "M" for Male or "F" for Female.</li>
+            </ul>
+            <p>Example CSV content:</p>
+            <pre>
+John Doe,M
+Jane Smith,F
+Alice Johnson,F
+Bob Brown,M
+            </pre>
+            <p>The simplest way to create this file is by using <strong>Microsoft Excel</strong> or a similar spreadsheet program:</p>
+            <ol>
+                <li>Open Excel and create a new spreadsheet.</li>
+                <li>In the first row add the name of the student (first and last) and in the second row add (M) for Male or (F) for Female.</li>
+                <li>Fill in the rows with student names and their genders (M or F).</li>
+                <li>Save the file as a <strong>CSV (Comma-Separated Values)</strong> file.</li>
+            </ol>
+            <p>Once the file is ready, upload it using the "Upload Student List" button on the main page.</p>
+        </section>
+        <section>
+            <h2>Contact</h2>
+            <p>If you encounter any issues, please contact <strong>Connor Knowles</strong> at <a href="mailto:Connor.knowles@beth.school.nz">Connor.knowles@beth.school.nz</a>.</p>
+        </section>
+        <button onclick="window.location.href='index.html'">Back to Planner</button>
+    </main>
+    <footer>
+        <p>Created by Connor Knowles</p>
+        <p>Version 1.0</p>
+    </footer>
+</body>
+</html>
