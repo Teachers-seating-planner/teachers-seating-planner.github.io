@@ -235,8 +235,9 @@ function autoArrangeByGender() {
     const boys = studentNames.filter(name => name.includes("(M)"));
     const girls = studentNames.filter(name => name.includes("(F)"));
 
-    if (boys.length + girls.length > seats.length) {
-        alert("Not enough seats for all students!");
+    // Check if there are any students to arrange
+    if (boys.length + girls.length === 0) {
+        alert("No students to arrange by gender!");
         return;
     }
 
