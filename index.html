@@ -22,7 +22,7 @@
                 </select>
                 <button onclick="addStudent()">Add Student</button>
                 <p></p>
-                <input type="file" id="student-file" accept=".csv">
+                <input type="file" id="student-file" accept=".xls,.xlsx">
                 <button onclick="uploadStudentFile()">Upload Student List</button>
             </details>
             <p></p>
@@ -77,6 +77,7 @@
 
     <!-- Button to navigate to instructions -->
     <button onclick="window.location.href='instructions.html'" style="margin: 20px auto; display: block;">Go to Instructions</button>
+    <button onclick="undo()">Undo</button> <!-- New Undo Button -->
     
     <footer>
         <p>Version 1.0</p>
