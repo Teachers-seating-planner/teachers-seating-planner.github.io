@@ -2,10 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const seatGrid = document.querySelector(".seat-grid");
     const gridWidthInput = document.getElementById("grid-width");
     const gridHeightInput = document.getElementById("grid-height");
+    const horizontalGapInput = document.getElementById("horizontal-gap");
+    const verticalGapInput = document.getElementById("vertical-gap");
+    const horizontalGapValueLabel = document.getElementById("horizontal-gap-value");
+    const verticalGapValueLabel = document.getElementById("vertical-gap-value");
 
     function createSeats() {
         const gridWidth = parseInt(gridWidthInput.value, 10) || 0;
         const gridHeight = parseInt(gridHeightInput.value, 10) || 0;
+        const horizontalGap = parseInt(horizontalGapInput.value, 10) || 0;
+        const verticalGap = parseInt(verticalGapInput.value, 10) || 0;
         const totalSeats = gridWidth * gridHeight;
 
         // Clear existing seats
@@ -13,6 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Set grid layout dynamically
         seatGrid.style.gridTemplateColumns = `repeat(${gridWidth}, 1fr)`;
+        seatGrid.style.columnGap = `${horizontalGap}px`; // Set horizontal gap
+        seatGrid.style.rowGap = `${verticalGap}px`; // Set vertical gap
 
         for (let i = 1; i <= totalSeats; i++) {
             let seat = document.createElement("div");
@@ -42,12 +50,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Update the gap labels dynamically
+    function updateGapLabels() {
+        horizontalGapValueLabel.textContent = `${horizontalGapInput.value}px`;
+        verticalGapValueLabel.textContent = `${verticalGapInput.value}px`;
+        createSeats(); // Recreate seats with the updated gaps
+    }
+
     // Create seats initially
     createSeats();
 
-    // Update seats when grid dimensions change
+    // Update seats when grid dimensions or gap sizes change
     gridWidthInput.addEventListener("input", createSeats);
     gridHeightInput.addEventListener("input", createSeats);
+    horizontalGapInput.addEventListener("input", createSeats);
+    verticalGapInput.addEventListener("input", createSeats);
+
+    // Expose the updateGapLabels function globally
+    window.updateGapLabels = updateGapLabels;
 });
 
 function uploadStudentFile() {
