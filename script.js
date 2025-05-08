@@ -90,14 +90,11 @@ function uploadStudentFile() {
         const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         rows.forEach(row => {
-            const [fullName, gender] = row;
-            if (!fullName || !gender) return;
+            const [_, lastName, firstName, gender] = row; // Skip column A and extract B, C, D
+            if (!lastName || !firstName || !gender) return; // Skip invalid rows
 
-            // Extract first name and first letter of last name
-            const nameParts = fullName.trim().split(" ");
-            const firstName = nameParts[0];
-            const lastNameInitial = nameParts.length > 1 ? nameParts[1][0] : "";
-            const formattedName = `${firstName} ${lastNameInitial}.`;
+            // Format the name as "FirstName L."
+            const formattedName = `${firstName.trim()} ${lastName.trim()[0]}.`;
 
             // Find an empty seat and assign the student
             const emptySeats = document.querySelectorAll(".seat:not(.occupied)");
