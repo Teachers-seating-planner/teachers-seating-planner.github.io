@@ -69,36 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function uploadStudentFile() {
-    console.log("Upload Student File button clicked"); // Debugging log
-
     const fileInput = document.getElementById("student-file");
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select an Excel file to upload.");
-        console.log("No file selected"); // Debugging log
+        alert("Please select a CSV file to upload.");
         return;
     }
 
-    console.log(`File selected: ${file.name}`); // Debugging log
-
     const reader = new FileReader();
     reader.onload = function (event) {
-        console.log("File loaded successfully"); // Debugging log
-
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-
-        // Assuming the first sheet contains the student data
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-
-        // Convert the sheet to JSON
-        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        console.log("Excel data parsed:", rows); // Debugging log
+        const csvContent = event.target.result;
+        const rows = csvContent.split("\n").map(row => row.trim()).filter(row => row);
 
         rows.forEach(row => {
-            const [_, lastName, firstName, gender] = row; // Skip column A and extract B, C, D
+            const [lastName, firstName, gender] = row.split(","); // Split by commas
             if (!lastName || !firstName || !gender) return; // Skip invalid rows
 
             // Format the name as "FirstName L."
@@ -118,11 +103,10 @@ function uploadStudentFile() {
     };
 
     reader.onerror = function () {
-        console.error("Error reading the file"); // Debugging log
         alert("Failed to read the file. Please try again.");
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsText(file);
 }
 
 // History stack to store previous states
@@ -566,6 +550,17 @@ function createUShape() {
             seatGrid.appendChild(seat);
         }
     }
+}
+
+function clearSeatName(seat) {
+    if (!seat.classList.contains("occupied")) {
+        alert("This seat is already empty!");
+        return;
+    }
+
+    seat.textContent = ""; // Clear the name
+    seat.classList.remove("occupied"); // Remove the occupied class
+    alert("Seat name cleared!");
 }
 
 
