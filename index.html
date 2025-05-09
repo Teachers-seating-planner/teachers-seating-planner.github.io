@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classroom Seating Planner</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -22,7 +24,7 @@
                 </select>
                 <button onclick="addStudent()">Add Student</button>
                 <p></p>
-                <input type="file" id="student-file" accept=".csv">
+                <input type="file" id="student-file" accept=".xls,.xlsx">
                 <button onclick="uploadStudentFile()">Upload Student List</button>
             </details>
             <p></p>
