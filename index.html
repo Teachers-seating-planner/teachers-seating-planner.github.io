@@ -22,7 +22,7 @@
                 </select>
                 <button onclick="addStudent()">Add Student</button>
                 <p></p>
-                <input type="file" id="student-file" accept=".xls,.xlsx">
+                <input type="file" id="student-file" accept=".csv">
                 <button onclick="uploadStudentFile()">Upload Student List</button>
             </details>
             <p></p>
@@ -43,9 +43,9 @@
                 <label for="horizontal-gap">Horizontal Gap:</label>
                 <input type="range" id="horizontal-gap" min="0" max="50" value="10" oninput="updateGapLabels()"> 
                 <br>
-                <p></p>
                 <label for="vertical-gap">Vertical Gap:</label>
                 <input type="range" id="vertical-gap" min="0" max="50" value="10" oninput="updateGapLabels()"> 
+               
                 <p></p>
                 <button onclick="resetPlan()">Reset Plan</button>
             </details>
