@@ -73,40 +73,60 @@ function uploadStudentFile() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a CSV file to upload.");
+        alert("Please select an Excel file to upload.");
+        console.log("No file selected"); // Debugging log
         return;
     }
 
+    console.log(`File selected: ${file.name}`); // Debugging log
+
     const reader = new FileReader();
     reader.onload = function (event) {
-        const csvContent = event.target.result;
-        const rows = csvContent.split("\n").map(row => row.trim()).filter(row => row);
+        try {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
 
-        rows.forEach(row => {
-            const [lastName, firstName, gender] = row.split(","); // Split by commas
-            if (!lastName || !firstName || !gender) return; // Skip invalid rows
+            console.log("Workbook loaded successfully"); // Debugging log
 
-            // Format the name as "FirstName L."
-            const formattedName = `${firstName.trim()} ${lastName.trim()[0]}.`;
+            // Assuming the first sheet contains the student data
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
 
-            // Find an empty seat and assign the student
-            const emptySeats = document.querySelectorAll(".seat:not(.occupied)");
-            if (emptySeats.length === 0) {
-                alert("No empty seats available for all students.");
-                return;
-            }
+            // Convert the sheet to JSON
+            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            const randomSeat = emptySeats[Math.floor(Math.random() * emptySeats.length)];
-            randomSeat.textContent = `${formattedName} (${gender.trim()})`;
-            randomSeat.classList.add("occupied");
-        });
+            console.log("Parsed rows:", rows); // Debugging log
+
+            rows.forEach(row => {
+                const [lastName, firstName, gender] = row; // Extract columns
+                if (!lastName || !firstName || !gender) return; // Skip invalid rows
+
+                // Format the name as "FirstName L."
+                const formattedName = `${firstName.trim()} ${lastName.trim()[0]}.`;
+
+                // Find an empty seat and assign the student
+                const emptySeats = document.querySelectorAll(".seat:not(.occupied)");
+                if (emptySeats.length === 0) {
+                    alert("No empty seats available for all students.");
+                    return;
+                }
+
+                const randomSeat = emptySeats[Math.floor(Math.random() * emptySeats.length)];
+                randomSeat.textContent = `${formattedName} (${gender.trim()})`;
+                randomSeat.classList.add("occupied");
+            });
+        } catch (error) {
+            console.error("Error processing the file:", error); // Debugging log
+            alert("Failed to process the file. Please ensure it is a valid Excel file.");
+        }
     };
 
     reader.onerror = function () {
+        console.error("Error reading the file"); // Debugging log
         alert("Failed to read the file. Please try again.");
     };
 
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
 }
 
 // History stack to store previous states
@@ -562,5 +582,6 @@ function clearSeatName(seat) {
     seat.classList.remove("occupied"); // Remove the occupied class
     alert("Seat name cleared!");
 }
+
 
 
